@@ -1,0 +1,82 @@
+[
+    {
+        "id": "CVE-2017-12465",
+        "description": "Multiple integer overflows in CCN-lite before 2.00 allow context-dependent attackers to have unspecified impact via vectors involving the (1) vallen variable in the iottlv_parse_sequence function or (2) typ, vallen and i variables in the localrpc_parse function.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "cvss_score": 10,
+        "severity": "Critical"
+    },
+    {
+        "id": "CVE-2017-14910",
+        "description": "In Snapdragon Automobile, Snapdragon IoT and Snapdragon Mobile MDM9206 MDM9607, MDM9650, S820A, S820Am, SD 210/SD 212/SD 205, SD 410/12, SD 425, SD 430, SD 615/16/SD 415, SD 617, SD 625, SD 650/52, SD 820, SD 835, and SD 845, a buffer overread is possible if there are no newlines in an input file.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "cvss_score": 10,
+        "severity": "Critical"
+    },
+    {
+        "id": "CVE-2017-7911",
+        "description": "A Code Injection issue was discovered in CyberVision Kaa IoT Platform, Version 0.7.4. An insufficient-encapsulation vulnerability has been identified, which may allow remote code execution.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "cvss_score": 9,
+        "severity": "Critical"
+    },
+    {
+        "id": "CVE-2016-4727",
+        "description": "IOThunderboltFamily in Apple OS X before 10.12 allows attackers to execute arbitrary code in a privileged context or cause a denial of service (memory corruption) via a crafted app.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+        "cvss_score": 8,
+        "severity": "High"
+    },
+    {
+        "id": "CVE-2017-7243",
+        "description": "Eclipse tinydtls 0.8.2 for Eclipse IoT allows remote attackers to cause a denial of service (DTLS peer crash) by sending a \"Change cipher spec\" packet without pre-handshake.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "cvss_score": 8,
+        "severity": "High"
+    },
+    {
+        "id": "CVE-2017-6780",
+        "description": "A vulnerability in the TCP throttling process for Cisco IoT Field Network Director (IoT-FND) could allow an unauthenticated, remote attacker to cause the system to consume additional memory, eventually forcing the device to restart, aka Memory Exhaustion. The vulnerability is due to insufficient rate-limiting protection. An attacker could exploit this vulnerability by sending a high rate of TCP packets to a specific group of open listening ports on a targeted device. An exploit could allow the attacker to cause the system to consume additional memory. If enough available memory is consumed, the system will restart, creating a temporary denial of service (DoS) condition. The DoS condition will end after the device has finished the restart process. This vulnerability affects the following Cisco products: Connected Grid Network Management System, if running a software release prior to IoT-FND Release 4.0; IoT Field Network Director, if running a software release prior to IoT-FND Release 4.0. Cisco Bug IDs: CSCvc77164.",
+        "cvss_schema": "CVSSv3.0",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "cvss_score": 8,
+        "severity": "High"
+    },
+    {
+        "id": "CVE-2017-16567",
+        "description": "Persistent Cross-Site Scripting (XSS) vulnerability in Logitech Media Server 7.9.0, affecting the \"Favorites\" feature. This vulnerability allows remote attackers to inject and permanently store malicious JavaScript payloads, which are executed when users access the affected functionality. Exploitation of this vulnerability can lead to Session Hijacking and Credential Theft, Execution of unauthorized actions on behalf of users, and Exfiltration of sensitive data. This vulnerability presents a potential risk for widespread exploitation in connected IoT environments.",
+        "cvss_schema": "CVSSv3.1",
+        "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N",
+        "cvss_score": 7,
+        "severity": "High"
+    },
+    {
+        "id": "CVE-2011-5135",
+        "description": "Multiple SQL injection vulnerabilities in the save_connection function in lib/lib.iotask.php in the iotask module in DoceboLMS 4.0.4 and earlier allow remote authenticated users with admin or teacher privileges to execute arbitrary SQL commands via the (1) coursereportuiconfig[name] or (2) coursereportuiconfig[description] parameters to index.php.",
+        "cvss_schema": "CVSSv2.0",
+        "cvss_vector": "AV:N/AC:M/Au:S/C:P/I:P/A:P",
+        "cvss_score": 1,
+        "severity": "Low"
+    },
+    {
+        "id": "CVE-2014-1381",
+        "description": "Thunderbolt in Apple OS X before 10.9.4 does not properly restrict IOThunderBoltController API calls, which allows attackers to execute arbitrary code or cause a denial of service (out-of-bounds memory access and application crash) via a crafted call.",
+        "cvss_schema": "CVSSv2.0",
+        "cvss_vector": "AV:N/AC:L/Au:N/C:C/I:C/A:C",
+        "cvss_score": 1,
+        "severity": "Low"
+    },
+    {
+        "id": "CVE-2015-7067",
+        "description": "IOThunderboltFamily in Apple OS X before 10.11.2 allows local users to cause a denial of service (NULL pointer dereference) via an unspecified userclient type.",
+        "cvss_schema": "CVSSv2.0",
+        "cvss_vector": "AV:L/AC:L/Au:N/C:N/I:N/A:P",
+        "cvss_score": 1,
+        "severity": "Low"
+    }
+]

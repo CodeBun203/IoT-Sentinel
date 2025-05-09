@@ -1,0 +1,51 @@
+{
+    "allowed": [
+        {
+            "ip": "ANY",
+            "port": "ANY",
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.0.100",
+            "port": "ANY",
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": 1883,
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": 1883,
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.1.1",
+            "port": 1883,
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.1.2",
+            "port": 1883,
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": 1883,
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.1.254",
+            "port": 1883,
+            "protocol": 6
+        }
+    ],
+    "denied": [
+        {
+	    "ip": "use!",
+	    "port": 23,
+	    "protocol": 6
+        }
+    ]
+}
