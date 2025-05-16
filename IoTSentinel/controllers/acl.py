@@ -1,104 +1,129 @@
+# In IoTSentinel/controllers/acl.py
+
 import json
 import os
 
 class ACLManager:
     def __init__(self):
-        """Initialize ACL configuration from file and print its contents."""
         self.file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "acl_config.json")
-
         try:
             with open(self.file_path, "r") as acl_file:
                 self.acl = json.load(acl_file)
-
-                # Debugging: Print the full ACL configuration
-                print("\n[ACL] LOADED CONFIGURATION:")
-                print(json.dumps(self.acl, indent=4))  # Pretty-print ACL config
-
-                # Validate ACL dictionary structure carefully
-                if isinstance(self.acl, dict):
-                    if "allowed" in self.acl and "denied" in self.acl:
-                        print("[ACL] Successfully loaded ACL rules.")
-                    else:
-                        print("[ACL WARNING] ACL config is missing 'allowed' or 'denied' keys. Initializing defaults.")
-                        self.acl.setdefault("allowed", [])
-                        self.acl.setdefault("denied", [])
-                else:
-                    print("[ACL ERROR] ACL config is invalid! Resetting rules.")
+                if not isinstance(self.acl, dict) or "allowed" not in self.acl or "denied" not in self.acl:
+                    print("[ACL WARNING] ACL config is malformed or missing keys. Initializing defaults.")
                     self.acl = {"allowed": [], "denied": []}
-
+                else:
+                    print("[ACL] Successfully loaded ACL rules.")
         except (FileNotFoundError, json.JSONDecodeError):
             print("[ACL ERROR] ACL configuration file missing or corrupt! Initializing default empty rules.")
             self.acl = {"allowed": [], "denied": []}
+        # print(f"[ACL] Initial - Allowed: {len(self.acl.get('allowed',[]))}, Denied: {len(self.acl.get('denied',[]))}")
+        # print(json.dumps(self.acl, indent=4))
 
-        print(f"[ACL] Final ACL rule count - Allowed: {len(self.acl['allowed'])}, Denied: {len(self.acl['denied'])}")
 
-    def check_acl(self, ip, port, protocol, direction="destination"):
-        """Check if a traffic flow is allowed based on IP, port, and protocol."""
-        print(f"\n[ACL] START CHECK: {direction.upper()} -> IP: {ip}, Port: {port}, Protocol: {protocol}")
+    def _matches_rule(self, rule, ip, port, protocol):
+        """Helper function to check if a packet matches a specific ACL rule."""
+        # Ensure port matching is done carefully, especially with "ANY"
+        rule_port = rule.get("port")
+        packet_port_matches = False
+        if rule_port == "ANY" or rule_port == port:
+            packet_port_matches = True
+        elif isinstance(rule_port, (int, str)) and isinstance(port, (int, str)):
+            try:
+                if int(rule_port) == int(port):
+                    packet_port_matches = True
+            except ValueError: # If port cannot be converted to int (e.g. it's "ANY" but wasn't caught)
+                pass
 
-        acl_list = self.acl.get("allowed", []) if direction == "destination" else self.acl.get("denied", [])
-        print(f"[ACL] Total rules checked: {len(acl_list)}")
 
-        match_found = False
+        ip_matches = (rule.get("ip") == "ANY" or rule.get("ip") == ip)
+        protocol_matches = (rule.get("protocol") == "ANY" or rule.get("protocol") == protocol)
 
-        for rule in acl_list:
-            print(f"[ACL] Comparing: Rule IP {rule['ip']}, Rule Port {rule['port']}, Rule Protocol {rule['protocol']}")
+        return ip_matches and packet_port_matches and protocol_matches
 
-            if rule["ip"] == "ANY":
-                print(f"[ACL DEBUG] Rule IP is 'ANY', applies to any destination.")
-            if rule["port"] == "ANY":
-                print(f"[ACL DEBUG] Rule Port is 'ANY', applies to any destination port.")
+    def check_acl(self, ip, port, protocol, direction="destination"): # Direction not really used here anymore
+        """
+        Checks if traffic is permitted based on ACL rules.
+        1. Checks DENY rules. If match, traffic is DENIED (returns False).
+        2. Checks ALLOW rules. If match, traffic is ALLOWED (returns True).
+        3. Default: If no match in DENY or ALLOW, traffic is DENIED (returns False).
+        """
+        # Ensure port is an integer for comparison if it's not "ANY"
+        # The port from tcp_packet.dstport will be an int. acl_config.json uses strings or ints.
+        if port != "ANY":
+            try:
+                port = int(port)
+            except ValueError:
+                print(f"[ACL WARNING] Invalid port value '{port}' during check. Treating as non-match unless rule port is 'ANY'.")
+                # This case should ideally not happen if inputs are clean
 
-            # If the rule allows "ANY" IP or "ANY" port, accept traffic immediately
-            if (rule["ip"] == "ANY" or rule["ip"] == ip) and (rule["port"] == "ANY" or rule["port"] == port) and rule["protocol"] == protocol:
-                print(f"[ACL] MATCH FOUND! TRAFFIC ALLOWED: {ip}, Port {port}, Protocol {protocol} (Explicit Allow)")
-                match_found = True
-                break
+        # Check DENY rules first
+        for rule in self.acl.get("denied", []):
+            if self._matches_rule(rule, ip, port, protocol):
+                print(f"[ACL] DENIED by rule: {rule} for {ip}:{port} (Proto: {protocol})")
+                return False # Deny traffic
 
-        if not match_found:
-            print(f"[ACL] NO MATCH FOUND. TRAFFIC DEFAULT DENY: {ip}, Port {port}, Protocol {protocol} (Not Explicitly Allowed)")
+        # Check ALLOW rules if no DENY rule matched
+        for rule in self.acl.get("allowed", []):
+            if self._matches_rule(rule, ip, port, protocol):
+                print(f"[ACL] ALLOWED by rule: {rule} for {ip}:{port} (Proto: {protocol})")
+                return True # Allow traffic
 
-        return match_found
-
-    def block_vulnerability(self, ip, port, protocol):
-        """Dynamically add a deny rule to block a detected vulnerability."""
-        print(f"[ACL UPDATE] Blocking vulnerability: IP {ip}, Port {port}, Protocol {protocol}")
-
-        self.acl["denied"].append({"ip": ip, "port": port, "protocol": protocol})
-        self._save_acl_config()
+        print(f"[ACL] DEFAULT DENY (no matching allow/deny rule) for {ip}:{port} (Proto: {protocol})")
+        return False # Default deny if no rule explicitly allows
 
     def add_rule(self, ip, port, protocol, action="allow"):
         """Dynamically add a rule to ACL (allow or deny traffic)."""
-        rule_list = "allowed" if action == "allow" else "denied"
+        rule_list_name = "allowed" if action == "allow" else "denied"
+        
+        # Ensure the list exists
+        if rule_list_name not in self.acl:
+            self.acl[rule_list_name] = []
 
-        print(f"[ACL UPDATE] Adding {action.upper()} rule: IP {ip}, Port {port}, Protocol {protocol}")
-        self.acl[rule_list].append({"ip": ip, "port": port, "protocol": protocol})
-        self._save_acl_config()
+        new_rule = {"ip": ip, "port": port, "protocol": protocol}
+
+        # Avoid duplicate rules
+        if new_rule not in self.acl[rule_list_name]:
+            self.acl[rule_list_name].append(new_rule)
+            print(f"[ACL UPDATE] Added {action.upper()} rule: {new_rule}")
+            self._save_acl_config()
+        else:
+            print(f"[ACL UPDATE] Rule {new_rule} already exists in {action.upper()} list.")
+
 
     def remove_rule(self, ip, port, protocol, action="allow"):
         """Dynamically remove a rule from ACL."""
-        rule_list = "allowed" if action == "allow" else "denied"
+        rule_list_name = "allowed" if action == "allow" else "denied"
+        
+        if rule_list_name not in self.acl:
+            return # Nothing to remove
 
-        print(f"[ACL UPDATE] Removing {action.upper()} rule: IP {ip}, Port {port}, Protocol {protocol}")
-        self.acl[rule_list] = [rule for rule in self.acl[rule_list] if rule["ip"] != ip or rule["port"] != port or rule["protocol"] != protocol]
-        self._save_acl_config()
+        rule_to_remove = {"ip": ip, "port": port, "protocol": protocol}
+        
+        if rule_to_remove in self.acl[rule_list_name]:
+            self.acl[rule_list_name].remove(rule_to_remove)
+            print(f"[ACL UPDATE] Removed {action.upper()} rule: {rule_to_remove}")
+            self._save_acl_config()
+        else:
+            print(f"[ACL UPDATE] Rule {rule_to_remove} not found in {action.upper()} list for removal.")
 
     def _save_acl_config(self):
         """Save the updated ACL configuration back to file."""
         try:
             with open(self.file_path, "w") as acl_file:
                 json.dump(self.acl, acl_file, indent=4)
-            print("[ACL] Configuration updated successfully.")
+            # print("[ACL] Configuration saved successfully.")
         except IOError:
             print("[ACL ERROR] Failed to write ACL configuration to file!")
 
 # Example usage for manual testing
 if __name__ == "__main__":
     manager = ACLManager()
-    print(manager.check_acl("10.0.0.100", 1883, 6, "destination"))  # Expected: True (Allowed via "ANY")
-    print(manager.check_acl("10.0.0.100", 56067, 6, "destination"))  # Expected: True (Allowed via "ANY")
-    print(manager.check_acl("10.0.0.100", 3306, 6, "destination"))  # Expected: False (Denied)
-
-    # Block a vulnerability
-    manager.block_vulnerability("10.0.0.2", 23, 6)
-    print(manager.check_acl("10.0.0.2", 23, 6, "destination"))  # Expected: False (Denied due to vulnerability block)
+    # Test cases should reflect the new logic: deny first, then allow, then default deny.
+    # Initial acl_config.json should have a default allow ANY/ANY/6 for testing,
+    # or specific allows for MQTT, etc.
+    # Example: Deny telnet to 10.0.0.2
+    # manager.add_rule("10.0.0.2", 23, 6, "deny")
+    # print(f"Check 10.0.0.2:23 (TCP) (Telnet): Expected False -> {manager.check_acl('10.0.0.2', 23, 6)}")
+    # print(f"Check 10.0.0.2:80 (TCP) (HTTP): Expected True (if allowed by ANY rule) -> {manager.check_acl('10.0.0.2', 80, 6)}")
+    # print(f"Check 10.0.0.100:1883 (TCP) (MQTT): Expected True (if allowed) -> {manager.check_acl('10.0.0.100', 1883, 6)}")

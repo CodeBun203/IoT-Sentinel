@@ -3,49 +3,21 @@
         {
             "ip": "ANY",
             "port": "ANY",
-            "protocol": 6
+            "protocol": 6,
+            "comment": "General TCP allow for testing scanners and initial connections"
         },
         {
-            "ip": "10.0.0.100",
+            "ip": "ANY",
             "port": "ANY",
-            "protocol": 6
+            "protocol": 17,
+            "comment": "General UDP allow"
         },
         {
-            "ip": "10.0.0.1",
-            "port": 1883,
-            "protocol": 6
-        },
-        {
-            "ip": "10.0.0.2",
-            "port": 1883,
-            "protocol": 6
-        },
-        {
-            "ip": "10.0.1.1",
-            "port": 1883,
-            "protocol": 6
-        },
-        {
-            "ip": "10.0.1.2",
-            "port": 1883,
-            "protocol": 6
-        },
-        {
-            "ip": "10.0.0.254",
-            "port": 1883,
-            "protocol": 6
-        },
-        {
-            "ip": "10.0.1.254",
-            "port": 1883,
-            "protocol": 6
+            "ip": "ANY",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "General ICMP allow for ping"
         }
     ],
-    "denied": [
-        {
-	    "ip": "use!",
-	    "port": 23,
-	    "protocol": 6
-        }
-    ]
+    "denied": []
 }
