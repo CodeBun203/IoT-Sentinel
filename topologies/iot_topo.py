@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-IoT Sentinel Mininet Topology Script
-
-This script sets up a custom Mininet topology simulating an IoT environment
-with two switches, four hosts (IoT devices), an MQTT broker, and NAT functionality.
-It also integrates with a remote POX controller for SDN capabilities.
+Rendition 1: iot_topo.py using Mininet's built-in NAT class.
+This script configures hosts and relies on manual service starts in xterms.
+The NAT node should make Mininet hosts reachable from the VM for POX scanners.
 """
 
 from mininet.cli import CLI
@@ -12,95 +10,117 @@ from mininet.log import setLogLevel, info
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.link import TCLink
-from mininet.node import RemoteController, Node
+from mininet.node import RemoteController
+from mininet.nodelib import NAT
+
+import time
+import os
 
 class IoTSentinelTopo(Topo):
-    """
-    Custom IoT topology with 2 switches, 4 hosts, an MQTT broker, and NAT functionality.
-    """
-
-    def build(self):
-        """
-        Build the custom topology.
-        """
-        # Create switches
+    def build(self, natIPInternal='10.0.0.254'):
         s1 = self.addSwitch('s1')
-        s2 = self.addSwitch('s2')
 
-        # Create hosts (IoT devices) with CPU constraints
-        h1 = self.addHost('h1', ip='10.0.0.1/24', cpu=0.25)  # 25% CPU limit
-        h2 = self.addHost('h2', ip='10.0.0.2/24', cpu=0.25)  # 25% CPU limit
-        h3 = self.addHost('h3', ip='10.0.1.1/24', cpu=0.1)   # 10% CPU limit
-        h4 = self.addHost('h4', ip='10.0.1.2/24', cpu=0.1)   # 10% CPU limit
+        info(f"*** Adding NAT node (nat0) using mininet.nodelib.NAT. Internal IP for Mininet hosts: {natIPInternal}\n")
+        self.addNode('nat0', cls=NAT, ip=f'{natIPInternal}/24', inNamespace=False)
+        self.addLink(s1, 'nat0')
 
-        # Create MQTT broker
-        broker = self.addHost('broker', ip='10.0.0.100/24', cpu=0.5)  # 50% CPU limit for broker
-
-        # Connect hosts to switches with bandwidth, delay, and packet loss constraints
-        self.addLink(h1, s1, bw=1, delay='50ms')             # 1 Mbps, 50ms delay
-        self.addLink(h2, s1, bw=1, delay='50ms')             # 1 Mbps, 50ms delay
-        self.addLink(h3, s2, bw=0.5, delay='100ms', loss=5)  # 0.5 Mbps, 100ms delay, 5% packet loss
-        self.addLink(h4, s2, bw=0.5, delay='100ms', loss=5)  # 0.5 Mbps, 100ms delay, 5% packet loss
-
-        # Connect broker to switch 1
-        self.addLink(broker, s1, bw=2, delay='20ms')         # 2 Mbps, 20ms delay
-
-        # Connect switches together
-        self.addLink(s1, s2, bw=10, delay='10ms')            # 10 Mbps, 10ms delay
+        h1 = self.addHost('h1', ip='10.0.0.1/24', defaultRoute=f'via {natIPInternal}')
+        h2 = self.addHost('h2', ip='10.0.0.2/24', defaultRoute=f'via {natIPInternal}') 
+        h3 = self.addHost('h3', ip='10.0.0.3/24', defaultRoute=f'via {natIPInternal}')  
+        h4 = self.addHost('h4', ip='10.0.0.4/24', defaultRoute=f'via {natIPInternal}')  
+        broker = self.addHost('broker', ip='10.0.0.100/24', defaultRoute=f'via {natIPInternal}')
+        
+        self.addLink(h1, s1)
+        self.addLink(h2, s1)
+        self.addLink(broker, s1)
+        self.addLink(h3, s1) 
+        self.addLink(h4, s1)
 
 def start_network():
-    """
-    Starts the Mininet network with NAT configuration, resource constraints, and remote controller integration.
-    """
+    if os.geteuid() != 0:
+        info("Error: This script must be run as root (using sudo). Exiting.")
+        return
+
     setLogLevel('info')
-    topo = IoTSentinelTopo()
+    natInternalIP = '10.0.0.254'
+    topo = IoTSentinelTopo(natIPInternal=natInternalIP) 
+    
     net = Mininet(
         topo=topo,
-        link=TCLink,  # Traffic control
-        controller=lambda name: RemoteController(name, ip='127.0.0.1', port=6633)  # Remote POX Controller
+        link=TCLink,
+        controller=None 
     )
+    
+    info("*** Adding remote controller (POX)\n")
+    net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6633)
 
-    # Add and configure NAT
-    nat = net.addHost('nat', ip='10.0.0.254/24')
-    net.addLink(nat, net.get('s1'))  # Link NAT to s1
-    net.addLink(nat, net.get('s2'))  # Link NAT to s2
+    info("*** Starting network with Mininet NAT class\n")
+    net.start() 
 
-    # Start the network
-    net.start()
-
-    # Configure NAT IPs
-    nat.setIP('10.0.0.254/24', intf='nat-eth0')
-    nat.setIP('10.0.1.254/24', intf='nat-eth1')
-
-    # Enable IP forwarding on NAT
-    nat.cmd('sysctl net.ipv4.ip_forward=1')
-
-    # Apply iptables rules for NAT and forwarding
-    nat.cmd('iptables -t nat -A POSTROUTING -o nat-eth0 -j MASQUERADE')
-    nat.cmd('iptables -t nat -A POSTROUTING -o nat-eth1 -j MASQUERADE')
-    nat.cmd('iptables -A FORWARD -i nat-eth0 -o nat-eth1 -j ACCEPT')
-    nat.cmd('iptables -A FORWARD -i nat-eth1 -o nat-eth0 -j ACCEPT')
-
-    # Add default gateways for hosts in the 10.0.0.x and 10.0.1.x subnets
-    h1 = net.get('h1')
-    h2 = net.get('h2')
-    h3 = net.get('h3')
-    h4 = net.get('h4')
-    broker = net.get('broker')
-    h1.cmd('route add default gw 10.0.0.254')
-    h2.cmd('route add default gw 10.0.0.254')
-    h3.cmd('route add default gw 10.0.1.254')
-    h4.cmd('route add default gw 10.0.1.254')
-    broker.cmd('route add default gw 10.0.0.254')  # Added gateway for broker
-
-    # Start MQTT broker
+    broker_node = net.get('broker')
     info("*** Starting MQTT broker on 'broker' host\n")
-    broker.cmd('mosquitto -d')  # Start the MQTT broker
+    broker_node.cmdPrint('mosquitto -d') # Runs mosquitto in daemon mode
+    time.sleep(1)
 
-    # Open Mininet CLI
+    info("\n*** Applying Configurations for Vulnerabilities (Manual Service Start for Telnet/SSH) ***\n")
+    h2_node = net.get('h2')
+    h3_node = net.get('h3')
+    h4_node = net.get('h4')
+
+    # --- h2: Telnet Config ONLY ---
+    info("--- h2: Configuring for Telnet (Manual service start required) ---")
+    try:
+        telnet_conf_line = 'telnet stream tcp nowait root /usr/sbin/tcpd /usr/sbin/in.telnetd'
+        h2_node.cmdPrint(f"sed -i '/^telnet\\s*stream\\s*tcp\\s*nowait/d' /etc/inetd.conf") 
+        h2_node.cmdPrint(f"echo '{telnet_conf_line}' >> /etc/inetd.conf")
+        h2_node.cmdPrint("echo 'in.telnetd: ALL' > /etc/hosts.allow") 
+        h2_node.cmdPrint("echo 'ALL: ALL' >> /etc/hosts.allow") 
+        h2_node.cmdPrint("echo '' > /etc/hosts.deny") 
+        info("h2: /etc/inetd.conf configured. To start Telnet: open 'xterm h2', then run '/usr/sbin/inetd -d'.")
+    except Exception as e: info(f"h2: EXCEPTION: {e}")
+    info("--- h2: Telnet config finished ---")
+
+    # --- h3: SSH Config ONLY ---
+    info("--- h3: Configuring for SSH (Manual service start required) ---")
+    try:
+        h3_node.cmdPrint("mkdir -p /run/sshd && chmod 0755 /run/sshd")
+        h3_node.cmdPrint("cp /etc/ssh/sshd_config /tmp/sshd_config_temp_backup")
+        h3_node.cmdPrint("sed -i 's/^#\\s*PasswordAuthentication .*/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmdPrint("sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmdPrint("grep -q '^PasswordAuthentication yes' /tmp/sshd_config_temp_backup || echo 'PasswordAuthentication yes' >> /tmp/sshd_config_temp_backup")
+        h3_node.cmdPrint("sed -i '/^#\\s*PermitRootLogin .*/PermitRootLogin yes/' /tmp/sshd_config_temp_backup") # If needed for root login tests
+        h3_node.cmdPrint("sed -i '/^PermitRootLogin prohibit-password/PermitRootLogin yes/' /tmp/sshd_config_temp_backup") # If needed
+        h3_node.cmdPrint("grep -q '^PermitRootLogin yes' /tmp/sshd_config_temp_backup || echo 'PermitRootLogin yes' >> /tmp/sshd_config_temp_backup")
+
+
+        h3_node.cmdPrint("sed -i '/^#\\s*ListenAddress .*/d' /tmp/sshd_config_temp_backup") 
+        h3_node.cmdPrint("sed -i '/^ListenAddress .*/d' /tmp/sshd_config_temp_backup")      
+        h3_node.cmdPrint("echo 'ListenAddress 0.0.0.0' >> /tmp/sshd_config_temp_backup")
+        h3_node.cmdPrint("cp /tmp/sshd_config_temp_backup /etc/ssh/sshd_config")
+        h3_node.cmdPrint("grep -E '^PasswordAuthentication|^ListenAddress|^PermitRootLogin' /etc/ssh/sshd_config")
+        
+        h3_node.cmdPrint('useradd -m user || echo "User user already exists"')
+        h3_node.cmdPrint('echo "user:password" | chpasswd')
+        # Updated instruction for starting sshd to run as a daemon
+        info("h3: SSH configured. To start SSH as a daemon: open 'xterm h3', then run '/usr/sbin/sshd -p 22'.")
+        info("   (For debug mode that exits after one session, use: '/usr/sbin/sshd -D -d -e -p 22')")
+    except Exception as e: info(f"h3: EXCEPTION: {e}")
+    info("--- h3: SSH config finished ---")
+
+    # --- h4: HTTP (Port 80) ---
+    info("--- h4: Starting HTTP server ---")
+    try:
+        # Ensure this runs in the background and doesn't hold up the script
+        h4_node.cmd('python3 -m http.server 80 > /tmp/h4_http.log 2>&1 &')
+        time.sleep(1) 
+        if ":80" in h4_node.cmd('netstat -tuln'): info("h4: HTTP server LISTENING.")
+        else: info("h4: HTTP server FAILED to listen.")
+    except Exception as e: info(f"h4: EXCEPTION: {e}")
+    info("--- h4: HTTP setup finished ---")
+
+    info("\n*** Configurations applied. MANUAL START Telnet (h2) & SSH (h3) in xterms. ***\n")
     CLI(net)
-
-    # Stop the network
+    info("*** Stopping network\n")
     net.stop()
 
 if __name__ == "__main__":
