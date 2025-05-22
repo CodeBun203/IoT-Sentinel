@@ -3,5 +3,6 @@
     "smtp_port": 587,
     "smtp_user": "nesmithhayden@gmail.com",
     "smtp_password": "lrgr xqsj cmop yhhp",
-    "recipient_email": "nesmithhayden@gmail.com"
+    "recipient_email": "nesmithhayden@gmail.com",
+    "unsubscribed": false
 }
