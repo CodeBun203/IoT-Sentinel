@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
-Rendition 1: iot_topo.py using Mininet's built-in NAT class.
-This script configures hosts and relies on manual service starts in xterms.
-The NAT node should make Mininet hosts reachable from the VM for POX scanners.
+iot_topo.py: Configures Mininet topology for IoT Sentinel.
+- h1: General host, hping3 installed for testing.
+- h2: Runs Telnet service.
+- h3: Runs SSH service, 'user:password' created, 'user' has NOPASSWD sudo for chpasswd.
+- h4: Runs HTTP server.
+- broker: Runs MQTT broker.
 """
 
 from mininet.cli import CLI
@@ -17,19 +20,22 @@ import time
 import os
 
 class IoTSentinelTopo(Topo):
+    """Custom topology for IoT Sentinel."""
     def build(self, natIPInternal='10.0.0.254'):
         s1 = self.addSwitch('s1')
 
-        info(f"*** Adding NAT node (nat0) using mininet.nodelib.NAT. Internal IP for Mininet hosts: {natIPInternal}\n")
+        info(f"*** Adding NAT node (nat0). Internal IP for Mininet hosts: {natIPInternal}\n")
         self.addNode('nat0', cls=NAT, ip=f'{natIPInternal}/24', inNamespace=False)
         self.addLink(s1, 'nat0')
 
+        # Add hosts
         h1 = self.addHost('h1', ip='10.0.0.1/24', defaultRoute=f'via {natIPInternal}')
         h2 = self.addHost('h2', ip='10.0.0.2/24', defaultRoute=f'via {natIPInternal}') 
         h3 = self.addHost('h3', ip='10.0.0.3/24', defaultRoute=f'via {natIPInternal}')  
         h4 = self.addHost('h4', ip='10.0.0.4/24', defaultRoute=f'via {natIPInternal}')  
         broker = self.addHost('broker', ip='10.0.0.100/24', defaultRoute=f'via {natIPInternal}')
         
+        # Add links
         self.addLink(h1, s1)
         self.addLink(h2, s1)
         self.addLink(broker, s1)
@@ -37,6 +43,7 @@ class IoTSentinelTopo(Topo):
         self.addLink(h4, s1)
 
 def start_network():
+    """Starts the Mininet network with IoT Sentinel configurations."""
     if os.geteuid() != 0:
         info("Error: This script must be run as root (using sudo). Exiting.")
         return
@@ -48,7 +55,7 @@ def start_network():
     net = Mininet(
         topo=topo,
         link=TCLink,
-        controller=None 
+        controller=None # Will be added manually
     )
     
     info("*** Adding remote controller (POX)\n")
@@ -57,18 +64,27 @@ def start_network():
     info("*** Starting network with Mininet NAT class\n")
     net.start() 
 
-    broker_node = net.get('broker')
-    info("*** Starting MQTT broker on 'broker' host\n")
-    broker_node.cmdPrint('mosquitto -d') # Runs mosquitto in daemon mode
-    time.sleep(1)
-
-    info("\n*** Applying Configurations for Vulnerabilities (Manual Service Start for Telnet/SSH) ***\n")
+    # Get host objects
+    h1_node = net.get('h1')
     h2_node = net.get('h2')
     h3_node = net.get('h3')
     h4_node = net.get('h4')
+    broker_node = net.get('broker')
+
+    # Start MQTT broker on 'broker' host
+    info(f"*** Starting MQTT broker on '{broker_node.name}' host\n")
+    broker_node.cmdPrint('mosquitto -d')
+    time.sleep(1) # Give broker a moment to start
+
+    info("\n*** Applying Configurations for Vulnerabilities & Services ***\n")
+
+    # --- h1: Install hping3 for DoS testing ---
+    info(f"--- {h1_node.name}: Installing hping3 for DoS testing ---")
+    h1_node.cmd("apt-get update && apt-get install -y hping3")
+    info(f"--- {h1_node.name}: hping3 installation attempted ---")
 
     # --- h2: Telnet Config ONLY ---
-    info("--- h2: Configuring for Telnet (Manual service start required) ---")
+    info(f"--- {h2_node.name}: Configuring for Telnet (Manual service start required) ---")
     try:
         telnet_conf_line = 'telnet stream tcp nowait root /usr/sbin/tcpd /usr/sbin/in.telnetd'
         h2_node.cmdPrint(f"sed -i '/^telnet\\s*stream\\s*tcp\\s*nowait/d' /etc/inetd.conf") 
@@ -76,48 +92,55 @@ def start_network():
         h2_node.cmdPrint("echo 'in.telnetd: ALL' > /etc/hosts.allow") 
         h2_node.cmdPrint("echo 'ALL: ALL' >> /etc/hosts.allow") 
         h2_node.cmdPrint("echo '' > /etc/hosts.deny") 
-        info("h2: /etc/inetd.conf configured. To start Telnet: open 'xterm h2', then run '/usr/sbin/inetd -d'.")
-    except Exception as e: info(f"h2: EXCEPTION: {e}")
-    info("--- h2: Telnet config finished ---")
+        info(f"{h2_node.name}: /etc/inetd.conf configured. To start Telnet: 'xterm {h2_node.name}', then run '/usr/sbin/inetd -d'.")
+    except Exception as e: info(f"{h2_node.name}: Telnet EXCEPTION: {e}")
+    info(f"--- {h2_node.name}: Telnet config finished ---")
 
-    # --- h3: SSH Config ONLY ---
-    info("--- h3: Configuring for SSH (Manual service start required) ---")
+    # --- h3: SSH Config & Sudo for 'user' to run chpasswd ---
+    info(f"--- {h3_node.name}: Configuring for SSH (Manual service start required) ---")
     try:
-        h3_node.cmdPrint("mkdir -p /run/sshd && chmod 0755 /run/sshd")
-        h3_node.cmdPrint("cp /etc/ssh/sshd_config /tmp/sshd_config_temp_backup")
-        h3_node.cmdPrint("sed -i 's/^#\\s*PasswordAuthentication .*/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
-        h3_node.cmdPrint("sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
-        h3_node.cmdPrint("grep -q '^PasswordAuthentication yes' /tmp/sshd_config_temp_backup || echo 'PasswordAuthentication yes' >> /tmp/sshd_config_temp_backup")
-        h3_node.cmdPrint("sed -i '/^#\\s*PermitRootLogin .*/PermitRootLogin yes/' /tmp/sshd_config_temp_backup") # If needed for root login tests
-        h3_node.cmdPrint("sed -i '/^PermitRootLogin prohibit-password/PermitRootLogin yes/' /tmp/sshd_config_temp_backup") # If needed
-        h3_node.cmdPrint("grep -q '^PermitRootLogin yes' /tmp/sshd_config_temp_backup || echo 'PermitRootLogin yes' >> /tmp/sshd_config_temp_backup")
-
-
-        h3_node.cmdPrint("sed -i '/^#\\s*ListenAddress .*/d' /tmp/sshd_config_temp_backup") 
-        h3_node.cmdPrint("sed -i '/^ListenAddress .*/d' /tmp/sshd_config_temp_backup")      
-        h3_node.cmdPrint("echo 'ListenAddress 0.0.0.0' >> /tmp/sshd_config_temp_backup")
-        h3_node.cmdPrint("cp /tmp/sshd_config_temp_backup /etc/ssh/sshd_config")
-        h3_node.cmdPrint("grep -E '^PasswordAuthentication|^ListenAddress|^PermitRootLogin' /etc/ssh/sshd_config")
+        h3_node.cmd("apt-get update && apt-get install -y openssh-server sudo") # Ensure sudo is present
+        h3_node.cmd("mkdir -p /run/sshd && chmod 0755 /run/sshd")
         
-        h3_node.cmdPrint('useradd -m user || echo "User user already exists"')
-        h3_node.cmdPrint('echo "user:password" | chpasswd')
-        # Updated instruction for starting sshd to run as a daemon
-        info("h3: SSH configured. To start SSH as a daemon: open 'xterm h3', then run '/usr/sbin/sshd -p 22'.")
-        info("   (For debug mode that exits after one session, use: '/usr/sbin/sshd -D -d -e -p 22')")
-    except Exception as e: info(f"h3: EXCEPTION: {e}")
-    info("--- h3: SSH config finished ---")
+        # Basic sshd_config
+        h3_node.cmd("cp /etc/ssh/sshd_config /tmp/sshd_config_temp_backup")
+        h3_node.cmd("sed -i 's/^#\\s*PasswordAuthentication .*/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmd("sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmd("grep -q '^PasswordAuthentication yes' /tmp/sshd_config_temp_backup || echo 'PasswordAuthentication yes' >> /tmp/sshd_config_temp_backup")
+        
+        h3_node.cmd("sed -i 's/^#\\s*PermitRootLogin .*/PermitRootLogin yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmd("sed -i 's/^PermitRootLogin prohibit-password/PermitRootLogin yes/' /tmp/sshd_config_temp_backup")
+        h3_node.cmd("grep -q '^PermitRootLogin yes' /tmp/sshd_config_temp_backup || echo 'PermitRootLogin yes' >> /tmp/sshd_config_temp_backup")
 
-    # --- h4: HTTP (Port 80) ---
-    info("--- h4: Starting HTTP server ---")
+        h3_node.cmd("sed -i '/^#\\s*ListenAddress .*/d' /tmp/sshd_config_temp_backup") 
+        h3_node.cmd("sed -i '/^ListenAddress .*/d' /tmp/sshd_config_temp_backup")      
+        h3_node.cmd("echo 'ListenAddress 0.0.0.0' >> /tmp/sshd_config_temp_backup")
+        h3_node.cmd("cp /tmp/sshd_config_temp_backup /etc/ssh/sshd_config")
+        
+        # Create 'user' with 'password'
+        h3_node.cmd('useradd -m user -s /bin/bash || echo "User user already exists"')
+        h3_node.cmd('echo "user:password" | chpasswd')
+
+        # Grant passwordless sudo for chpasswd to 'user' for ssh_fixer.py
+        sudoers_file_path = "/etc/sudoers.d/user_iot_fixer_permissions"
+        h3_node.cmd(f'echo "user ALL=(ALL) NOPASSWD: /usr/sbin/chpasswd" > {sudoers_file_path}')
+        h3_node.cmd(f'chmod 0440 {sudoers_file_path}') # Secure permissions for sudoers file
+        
+        info(f"{h3_node.name}: SSH configured for user 'user' with NOPASSWD sudo for chpasswd.")
+        info(f"To start SSH on {h3_node.name}: 'xterm {h3_node.name}', then run '/usr/sbin/sshd -p 22'.")
+    except Exception as e: info(f"{h3_node.name}: SSH EXCEPTION: {e}")
+    info(f"--- {h3_node.name}: SSH config finished ---")
+
+    # --- h4: HTTP (Port 80) ONLY ---
+    info(f"--- {h4_node.name}: Starting HTTP server ---")
     try:
-        # Ensure this runs in the background and doesn't hold up the script
         h4_node.cmd('python3 -m http.server 80 > /tmp/h4_http.log 2>&1 &')
         time.sleep(1) 
-        if ":80" in h4_node.cmd('netstat -tuln'): info("h4: HTTP server LISTENING.")
-        else: info("h4: HTTP server FAILED to listen.")
-    except Exception as e: info(f"h4: EXCEPTION: {e}")
-    info("--- h4: HTTP setup finished ---")
-
+        if ":80" in h4_node.cmd('netstat -tuln'): info(f"{h4_node.name}: HTTP server LISTENING.")
+        else: info(f"{h4_node.name}: HTTP server FAILED to listen.")
+    except Exception as e: info(f"{h4_node.name}: HTTP EXCEPTION: {e}")
+    info(f"--- {h4_node.name}: HTTP setup finished ---")
+    
     info("\n*** Configurations applied. MANUAL START Telnet (h2) & SSH (h3) in xterms. ***\n")
     CLI(net)
     info("*** Stopping network\n")
