@@ -6,6 +6,7 @@ iot_topo.py: Configures Mininet topology for IoT Sentinel.
 - h3: Runs SSH service, 'user:password' created, 'user' has NOPASSWD sudo for chpasswd.
 - h4: Runs HTTP server.
 - broker: Runs MQTT broker.
+- Hosts h1-h4 and broker are configured with static DNS servers (8.8.8.8, 1.1.1.1).
 """
 
 from mininet.cli import CLI
@@ -25,6 +26,7 @@ class IoTSentinelTopo(Topo):
         s1 = self.addSwitch('s1')
 
         info(f"*** Adding NAT node (nat0). Internal IP for Mininet hosts: {natIPInternal}\n")
+        # inNamespace=False for nat0 to access external network
         self.addNode('nat0', cls=NAT, ip=f'{natIPInternal}/24', inNamespace=False)
         self.addLink(s1, 'nat0')
 
@@ -102,7 +104,6 @@ def start_network():
         h3_node.cmd("apt-get update && apt-get install -y openssh-server sudo") # Ensure sudo is present
         h3_node.cmd("mkdir -p /run/sshd && chmod 0755 /run/sshd")
         
-        # Basic sshd_config
         h3_node.cmd("cp /etc/ssh/sshd_config /tmp/sshd_config_temp_backup")
         h3_node.cmd("sed -i 's/^#\\s*PasswordAuthentication .*/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
         h3_node.cmd("sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config_temp_backup")
@@ -117,14 +118,12 @@ def start_network():
         h3_node.cmd("echo 'ListenAddress 0.0.0.0' >> /tmp/sshd_config_temp_backup")
         h3_node.cmd("cp /tmp/sshd_config_temp_backup /etc/ssh/sshd_config")
         
-        # Create 'user' with 'password'
         h3_node.cmd('useradd -m user -s /bin/bash || echo "User user already exists"')
         h3_node.cmd('echo "user:password" | chpasswd')
 
-        # Grant passwordless sudo for chpasswd to 'user' for ssh_fixer.py
         sudoers_file_path = "/etc/sudoers.d/user_iot_fixer_permissions"
         h3_node.cmd(f'echo "user ALL=(ALL) NOPASSWD: /usr/sbin/chpasswd" > {sudoers_file_path}')
-        h3_node.cmd(f'chmod 0440 {sudoers_file_path}') # Secure permissions for sudoers file
+        h3_node.cmd(f'chmod 0440 {sudoers_file_path}') 
         
         info(f"{h3_node.name}: SSH configured for user 'user' with NOPASSWD sudo for chpasswd.")
         info(f"To start SSH on {h3_node.name}: 'xterm {h3_node.name}', then run '/usr/sbin/sshd -p 22'.")
@@ -140,8 +139,20 @@ def start_network():
         else: info(f"{h4_node.name}: HTTP server FAILED to listen.")
     except Exception as e: info(f"{h4_node.name}: HTTP EXCEPTION: {e}")
     info(f"--- {h4_node.name}: HTTP setup finished ---")
+
+    # --- Configuring Static DNS for Hosts ---
+    info("\n--- Configuring Static DNS for Hosts (using 8.8.8.8 and 1.1.1.1) ---")
+    dns_servers_conf = "nameserver 8.8.8.8\\nnameserver 1.1.1.1"
+    for host_node in [h1_node, h2_node, h3_node, h4_node, broker_node]:
+        info(f"Setting static DNS for {host_node.name}...")
+        # The -e flag for echo interprets \n as newline.
+        # Overwrite /etc/resolv.conf. This is safe in Mininet as it's per-namespace.
+        host_node.cmd(f"echo -e '{dns_servers_conf}' > /etc/resolv.conf")
+        # Optionally, verify:
+        # host_node.cmdPrint(f"cat /etc/resolv.conf") 
+    info("--- Static DNS configuration applied to relevant hosts ---")
     
-    info("\n*** Configurations applied. MANUAL START Telnet (h2) & SSH (h3) in xterms. ***\n")
+    info("\n*** Configurations applied. MANUAL START Telnet (h2) & SSH (h3) in xterms if needed. ***\n")
     CLI(net)
     info("*** Stopping network\n")
     net.stop()
