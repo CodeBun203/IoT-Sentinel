@@ -1,25 +1,274 @@
 {
     "allowed": [
         {
-            "ip": "ANY",
+            "ip": "10.0.0.1",
             "port": "ANY",
             "protocol": 6,
-            "comment": "General TCP allow for testing scanners and initial connections"
+            "comment": "H1 as TCP Source"
         },
         {
-            "ip": "ANY",
+            "ip": "10.0.0.1",
             "port": "ANY",
             "protocol": 17,
-            "comment": "General UDP allow"
+            "comment": "H1 as UDP Source"
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H1 as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H2 as TCP Source"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H2 as UDP Source"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H2 as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H3 as TCP Source"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H3 as UDP Source"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H3 as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H4 as TCP Source"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H4 as UDP Source"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H4 as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.100",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "Broker as TCP Source"
+        },
+        {
+            "ip": "10.0.0.100",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "Broker as UDP Source"
+        },
+        {
+            "ip": "10.0.0.100",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "Broker as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "NAT GW as TCP Source"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "NAT GW as UDP Source"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "NAT GW as ICMP Source"
+        },
+        {
+            "ip": "10.0.0.100",
+            "port": 1883,
+            "protocol": 6,
+            "comment": "Allow traffic TO Broker MQTT port TCP/1883"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": 53,
+            "protocol": 17,
+            "comment": "Allow DNS queries TO NAT GW (UDP/53)"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": 53,
+            "protocol": 6,
+            "comment": "Allow DNS queries TO NAT GW (TCP/53)"
         },
         {
             "ip": "ANY",
+            "port": 53,
+            "protocol": 17,
+            "comment": "Allow outgoing UDP DNS queries TO ANY"
+        },
+        {
+            "ip": "ANY",
+            "port": 53,
+            "protocol": 6,
+            "comment": "Allow outgoing TCP DNS queries TO ANY"
+        },
+        {
+            "ip": "ANY",
+            "port": 80,
+            "protocol": 6,
+            "comment": "Allow outgoing HTTP TO ANY"
+        },
+        {
+            "ip": "ANY",
+            "port": 443,
+            "protocol": 6,
+            "comment": "Allow outgoing HTTPS TO ANY"
+        },
+        {
+            "ip": "10.0.0.100",
             "port": "ANY",
             "protocol": 1,
-            "comment": "General ICMP allow for ping"
+            "comment": "Allow ICMP Ping TO Broker"
+        },
+        {
+            "ip": "10.0.0.254",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "Allow ICMP Ping TO NAT GW"
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H1 TCP Dest"
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H1 UDP Dest"
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H1 ICMP Dest"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H2 TCP Dest"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H2 UDP Dest"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H2 ICMP Dest"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H3 TCP Dest"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H3 UDP Dest"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H3 ICMP Dest"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 6,
+            "comment": "H4 TCP Dest"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 17,
+            "comment": "H4 UDP Dest"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": "ANY",
+            "protocol": 1,
+            "comment": "H4 ICMP Dest"
+        },
+        {
+            "ip": "10.0.0.2",
+            "port": 23,
+            "protocol": 6,
+            "comment": "Allow Telnet service on H2 (for scanning)"
+        },
+        {
+            "ip": "10.0.0.3",
+            "port": 22,
+            "protocol": 6,
+            "comment": "Allow SSH service on H3 (for scanning & fixing)"
+        },
+        {
+            "ip": "10.0.0.4",
+            "port": 80,
+            "protocol": 6,
+            "comment": "Allow HTTP service on H4 (for scanning)"
         }
     ],
     "denied": [
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 6
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 17
+        },
+        {
+            "ip": "10.0.0.1",
+            "port": "ANY",
+            "protocol": 1
+        },
         {
             "ip": "10.0.0.4",
             "port": 80,

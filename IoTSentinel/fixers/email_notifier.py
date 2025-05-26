@@ -22,6 +22,7 @@ def load_email_config():
             if "unsubscribed" not in email_config: 
                 email_config["unsubscribed"] = False
         except Exception as e:
+            # Fallback print if log object isn't available here
             print(f"[EmailNotifier ERROR] Could not load email config from {EMAIL_CONFIG_FILE}: {e}", file=sys.stderr)
             email_config = {"unsubscribed": True} 
     else:
@@ -40,12 +41,16 @@ def save_email_config():
 
 def is_user_subscribed():
     """Checks if the user is currently subscribed to email notifications."""
+    # Ensure config is loaded if it hasn't been already
+    if not email_config:
+        load_email_config()
     return not email_config.get("unsubscribed", False)
 
 def update_user_unsubscribe_status(should_unsubscribe):
     """Updates the user's email subscription status."""
     global email_config
-    if not email_config and not os.path.exists(EMAIL_CONFIG_FILE):
+    if not email_config and not os.path.exists(EMAIL_CONFIG_FILE): # If config is empty and file doesn't exist
+        # Create a default config structure to save the unsubscribe status
         email_config = {
             "smtp_server": "your_server.com", "smtp_port": 587,
             "smtp_user": "user@example.com", "smtp_password": "password",
@@ -59,7 +64,9 @@ def update_user_unsubscribe_status(should_unsubscribe):
     print(f"[EmailNotifier INFO] User email notification status set to: {status}", file=sys.stderr)
     return True
 
+# Load config when module is imported
 email_config = load_email_config()
+# These globals are set after load_email_config()
 SMTP_SERVER = email_config.get("smtp_server")
 SMTP_PORT = email_config.get("smtp_port")
 SMTP_USER = email_config.get("smtp_user")
@@ -75,36 +82,84 @@ def format_consolidated_vulnerabilities_for_email(vulnerabilities_with_actions):
         "\nThis is a summary of the latest scan cycle findings and actions:\n",
         "=" * 60
     ]
+    
+    highest_severity_val = 0 
+    severity_map = {"INFO":0, "LOW":1, "MEDIUM":2, "HIGH":3, "CRITICAL":4, "ERROR":4}
 
     for i, (scan_data, action_desc, outcome_msg) in enumerate(vulnerabilities_with_actions):
         body_lines.append(f"\nEntry #{i+1}:")
         
-        vuln_type = scan_data.get('vulnerability', 'Unknown Event')
-        ip = scan_data.get('ip', 'N/A')
-        severity = str(scan_data.get('severity', 'INFO')).upper()
-        details = scan_data.get('details', 'No additional details provided by scanner.')
-        
-        body_lines.append(f"  Event/Vulnerability: {vuln_type} (Severity: {severity})")
-        if ip != 'N/A':
-            body_lines.append(f"  Target IP: {ip}")
+        vuln_type = scan_data.get('vulnerability')
+        status_update = scan_data.get('status') # Check for status field
+        scanner_name = scan_data.get('scanner', 'Unknown Scanner')
+        ip_affected = scan_data.get('ip', 'N/A')
+        severity = str(scan_data.get('severity', 'INFO')).upper() # Status messages might not have severity, default to INFO
+        details = scan_data.get('details', 'No additional details provided.')
+
+        current_sev_val = severity_map.get(severity, 0)
+        if current_sev_val > highest_severity_val:
+            highest_severity_val = current_sev_val
+
+        if vuln_type: # It's a vulnerability
+            body_lines.append(f"  Event/Vulnerability: {vuln_type} (Severity: {severity})")
+        elif status_update: # It's a status update
+            body_lines.append(f"  Event/Status: {status_update}")
+            body_lines.append(f"  Source: {scanner_name}")
+            # For status, 'details' might not be relevant unless it's part of the status message itself
+            # The outcome_msg will contain the status if it's just a status.
+            # Let's adjust what 'details' means here or just rely on outcome_msg for status.
+            details = outcome_msg # For status, the outcome_msg is usually the status itself.
+        else: # Truly unknown or malformed
+            body_lines.append(f"  Event/Vulnerability: Undefined Event from {scanner_name} (Severity: {severity})")
+
+        if ip_affected != 'N/A':
+            body_lines.append(f"  Target IP: {ip_affected}")
 
         ports = scan_data.get('ports', scan_data.get('port'))
-        if ports:
+        if ports and vuln_type : # Only show ports if it's a vulnerability context
             body_lines.append(f"  Affected Port(s): {str(ports)}")
         
-        if "username" in scan_data and scan_data.get("username"):
+        if "username" in scan_data and scan_data.get("username") and vuln_type: # Only for vulns
             body_lines.append(f"  Affected User: {scan_data['username']}")
 
-        body_lines.append(f"  Scanner Details: {details}")
+        if vuln_type : # Only show "Scanner Details:" if it's a vulnerability
+             body_lines.append(f"  Scanner Details: {details}")
+        elif status_update: # For status, the 'details' was set to outcome_msg
+            pass # Action/Outcome will cover it
+        
+        # Prominent Sources for DoS
+        if vuln_type and ("potential_" in vuln_type and "flood" in vuln_type or "dos_ddos" in vuln_type):
+            prominent_sources = scan_data.get("prominent_sources")
+            if prominent_sources and isinstance(prominent_sources, list):
+                sources_display_limit = 3
+                sources_strings = []
+                for i_src, src_info in enumerate(prominent_sources):
+                    if i_src < sources_display_limit:
+                        source_ip = src_info.get("ip")
+                        source_count = src_info.get("count")
+                        if source_ip and source_count is not None:
+                            sources_strings.append(f"{source_ip} (count: {source_count})")
+                        elif source_ip:
+                            sources_strings.append(source_ip)
+                    else:
+                        sources_strings.append(f"and {len(prominent_sources) - sources_display_limit} more...")
+                        break
+                if sources_strings:
+                    body_lines.append(f"  Prominent Source IP(s): {', '.join(sources_strings)}")
+            
+            targeted_ports_info = scan_data.get("targeted_ports_info") 
+            if targeted_ports_info and isinstance(targeted_ports_info, list):
+                ports_strings = [f"{p_info.get('port')}(count:{p_info.get('count')})" for p_info in targeted_ports_info[:3]]
+                if ports_strings:
+                    body_lines.append(f"  Suspiciously Targeted Port(s): {', '.join(ports_strings)}{' and more...' if len(targeted_ports_info) > 3 else ''}")
+
         body_lines.append(f"  Action Attempted: {action_desc}")
         body_lines.append(f"  Action Outcome: {outcome_msg}")
 
-        # Display new password if ssh_fixer was successful and provided it in the outcome_msg
         password_phrase = "new password set is: "
         if password_phrase in outcome_msg.lower() and \
            (("password for" in outcome_msg.lower() and "changed successfully" in outcome_msg.lower()) or \
-            ("new password logged" in outcome_msg.lower())): # Check if it's a password change message
-            
+            ("new password logged" in outcome_msg.lower())):
             user_changed = scan_data.get("username", "N/A_USER")
             if user_changed == "N/A_USER" and "user '" in outcome_msg:
                 try:
@@ -112,34 +167,29 @@ def format_consolidated_vulnerabilities_for_email(vulnerabilities_with_actions):
                 except IndexError:
                     user_changed = "an affected user"
             
-            body_lines.append(f"  RECOMMENDATION: The password for '{user_changed}' on {ip} was changed automatically.")
+            body_lines.append(f"  RECOMMENDATION: The password for '{user_changed}' on {ip_affected} was changed automatically.")
             try:
-                password_part = outcome_msg.lower().split(password_phrase, 1)[1].strip()
-                actual_new_password = password_part.split(" ")[0] 
-                
-                if actual_new_password and not actual_new_password.startswith("("): # Basic check to avoid "(actual value logged..."
-                     body_lines.append(f"                  The automatically set new password is: {actual_new_password}")
-                     body_lines.append(f"                  SECURITY WARNING: This password is included for your convenience during testing.")
-                     body_lines.append(f"                                  Transmitting passwords via email is insecure and NOT recommended for production.")
-                else: 
-                    body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt")
+                password_part_search = outcome_msg.lower().split(password_phrase, 1)
+                if len(password_part_search) > 1:
+                    actual_new_password = password_part_search[1].strip().split(" ")[0]
+                    if actual_new_password and len(actual_new_password) > 3 and not actual_new_password.startswith("("):
+                         body_lines.append(f"                  The automatically set new password is: {actual_new_password}")
+                         body_lines.append(f"                  SECURITY WARNING: This password is included for your convenience during testing.")
+                         body_lines.append(f"                                  Transmitting passwords via email is insecure and NOT recommended for production.")
+                    else: 
+                        body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt") # Added more specific log file name
+                else:
+                    body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt")
             except Exception as e: 
                 print(f"[EmailNotifier WARN] Could not parse new password from outcome: {outcome_msg}. Error: {e}", file=sys.stderr)
-                body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt")
+                body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt")
             body_lines.append(f"                  It is strongly advised to log in with this new password and change it to a strong, memorable one of your choice.")
-        
         body_lines.append("-" * 60)
     
     body_lines.append("\nPlease review the system logs for more detailed information.")
     body_lines.append("\nRegards,\nIoT Sentinel System")
     
     email_body = "\n".join(body_lines)
-    
-    highest_severity_val = 0 
-    severity_map = {"INFO":0, "LOW":1, "MEDIUM":2, "HIGH":3, "CRITICAL":4, "ERROR":4}
-    for item, _, _ in vulnerabilities_with_actions:
-        sev = str(item.get("severity", "INFO")).upper()
-        highest_severity_val = max(highest_severity_val, severity_map.get(sev, 0))
     
     subject_severity_prefix = "[INFO]"
     if highest_severity_val == 1: subject_severity_prefix = "[LOW Alert]"
@@ -150,14 +200,21 @@ def format_consolidated_vulnerabilities_for_email(vulnerabilities_with_actions):
     return subject_severity_prefix, email_body
 
 def send_consolidated_email_notification(subject_prefix, formatted_vulnerabilities_body):
-    if not is_user_subscribed():
+    # Ensure config is up-to-date before sending
+    current_email_config = load_email_config() # Re-load config to get latest values
+
+    if not is_user_subscribed(): # is_user_subscribed will use the re-loaded config
         print("[EmailNotifier SKIPPED] User is unsubscribed. No email sent.", file=sys.stderr)
         return True 
 
-    current_smtp_user = email_config.get("smtp_user")
-    current_recipient = email_config.get("recipient_email")
+    # Use re-loaded config values for sending
+    smtp_server = current_email_config.get("smtp_server")
+    smtp_port = current_email_config.get("smtp_port")
+    smtp_user = current_email_config.get("smtp_user")
+    smtp_password = current_email_config.get("smtp_password")
+    recipient_email = current_email_config.get("recipient_email")
 
-    if not all([SMTP_SERVER, SMTP_PORT, current_smtp_user, SMTP_PASSWORD, current_recipient]):
+    if not all([smtp_server, smtp_port, smtp_user, smtp_password, recipient_email]):
         print("[EmailNotifier SKIPPED] Email configuration is incomplete for consolidated email.", file=sys.stderr)
         print(f"    Subject Prefix: {subject_prefix}\n    Body Preview (first 200 chars): {formatted_vulnerabilities_body[:200]}...", file=sys.stderr)
         return False
@@ -167,30 +224,31 @@ def send_consolidated_email_notification(subject_prefix, formatted_vulnerabiliti
 
     unsubscribe_instruction = (
         f"\n\n---\nTo manage email notification preferences, please refer to the IoT Sentinel application "
-        f"or contact your administrator. (Email: {current_recipient})"
+        f"or contact your administrator. (Email: {recipient_email})"
     )
     final_body = formatted_vulnerabilities_body + unsubscribe_instruction
 
     msg = MIMEText(final_body, 'plain')
     msg['Subject'] = full_subject
-    msg['From'] = current_smtp_user
-    msg['To'] = current_recipient
+    msg['From'] = smtp_user
+    msg['To'] = recipient_email
 
     try:
-        print(f"[EmailNotifier INFO] Attempting to send consolidated email to {current_recipient} via {SMTP_SERVER}:{SMTP_PORT}", file=sys.stderr)
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        print(f"[EmailNotifier INFO] Attempting to send consolidated email to {recipient_email} via {smtp_server}:{smtp_port}", file=sys.stderr)
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
             server.ehlo()
             server.starttls()
             server.ehlo()
-            server.login(current_smtp_user, SMTP_PASSWORD)
-            server.sendmail(current_smtp_user, current_recipient, msg.as_string())
-        print(f"[EmailNotifier SUCCESS] Consolidated email sent successfully to {current_recipient}", file=sys.stderr)
+            server.login(smtp_user, smtp_password)
+            server.sendmail(smtp_user, recipient_email, msg.as_string())
+        print(f"[EmailNotifier SUCCESS] Consolidated email sent successfully to {recipient_email}", file=sys.stderr)
         return True
     except Exception as e:
         print(f"[EmailNotifier FAILED] Could not send consolidated email: {e}", file=sys.stderr)
         return False
 
 if __name__ == "__main__":
+    # (Test code remains the same)
     print("[EmailNotifier Direct Test - Consolidated] Running direct test...", file=sys.stderr)
     
     if not is_user_subscribed():
@@ -208,6 +266,11 @@ if __name__ == "__main__":
                 {"ip": "10.0.0.2", "vulnerability": "open_telnet_port", "ports": [23], "severity": "CRITICAL", "details": "Telnet open on device."},
                 "Ran fixer 'port_closer' for IP '10.0.0.2'", 
                 "No direct on-device method succeeded for closing 23/tcp on 10.0.0.2. POX additionally applied a network ACL to block incoming traffic to port 23/tcp on 10.0.0.2."
+            ),
+            ( # Test status message
+                {"scanner": "test_scanner", "status": "scan_complete_no_issues_found", "ip": "10.0.0.99", "severity": "INFO"}, # Added severity for status
+                "Status update from test_scanner",
+                "scan_complete_no_issues_found"
             )
         ]
         if test_vulns_and_actions:
