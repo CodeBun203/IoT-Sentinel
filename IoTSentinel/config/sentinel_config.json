@@ -1,0 +1,32 @@
+{
+    "scanning": {
+        "initial_delay_seconds": 15,
+        "interval_seconds": 120,
+        "scanners_to_run": [
+            "iot_scanner.py",
+            "ssh_scanner.py"
+        ]
+    },
+    "dos_detection": {
+        "window_seconds": 10,
+        "syn_flood_threshold": 20,
+        "udp_flood_threshold": 200,
+        "icmp_flood_threshold": 50,
+        "dos_alert_cooldown_seconds": 120,
+        "dos_cleanup_interval": 20,
+        "dos_logic_budget_per_ip": 1000,
+        "dos_logic_budget_window_seconds": 1.0,
+        "packet_in_log_interval": 5.0
+    },
+    "notifications": {
+        "email": {
+            "enabled": true,
+            "severity_threshold": "High",
+            "smtp_server": "smtp.gmail.com",
+            "smtp_port": 587,
+            "smtp_user": "nesmithhayden@gmail.com",
+            "smtp_password": "lrgr xqsj cmop yhhp",
+            "recipient_email": "nesmithhayden@gmail.com"
+        }
+    }
+}

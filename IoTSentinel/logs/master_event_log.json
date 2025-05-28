@@ -1,0 +1,1253 @@
+[
+    {
+        "timestamp": "2025-05-26 14:28:03",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.4.",
+                "No specific automated fixer action taken/configured for this type."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100.",
+                "No specific automated fixer action taken/configured for this type."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 14:30:03",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.4.",
+                "No specific automated fixer action taken/configured for this type."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100.",
+                "No specific automated fixer action taken/configured for this type."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 14:32:03",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.4.",
+                "No specific automated fixer action taken/configured for this type."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100.",
+                "No specific automated fixer action taken/configured for this type."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 16:30:13",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.4.",
+                "No specific automated fixer action taken/configured for this type."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100.",
+                "No specific automated fixer action taken/configured for this type."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 16:56:01",
+        "events": [
+            [
+                {
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "ip": "10.0.0.4",
+                    "ports": [
+                        80
+                    ],
+                    "scanner": "iot_port_scanner",
+                    "severity": "medium",
+                    "vulnerability": "open_ports"
+                },
+                "Identified 'open_ports' on 10.0.0.4",
+                "No automated fixer configured for this type."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 17:34:10",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 17:55:16",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 17:56:00",
+        "events": [
+            [
+                {
+                    "scanner": "pox_internal_dos_detector",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "potential_syn_packet_flood",
+                    "details": "SYN packet flood: 21 SYNs to port 22 in 10s.",
+                    "port": 22,
+                    "protocol": "TCP",
+                    "packet_count": 21,
+                    "prominent_sources": [
+                        {
+                            "ip": "10.0.0.1",
+                            "count": 21
+                        }
+                    ],
+                    "severity": "critical"
+                },
+                "Internal DoS: SYN Flood on 10.0.0.3:22",
+                "Threshold breached, Fixer will be dispatched."
+            ],
+            [
+                {
+                    "scanner": "pox_internal_dos_detector",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "potential_syn_packet_flood",
+                    "details": "SYN packet flood: 21 SYNs to port 22 in 10s.",
+                    "port": 22,
+                    "protocol": "TCP",
+                    "packet_count": 21,
+                    "prominent_sources": [
+                        {
+                            "ip": "10.0.0.1",
+                            "count": 21
+                        }
+                    ],
+                    "severity": "critical"
+                },
+                "Ran fixer 'ddos_fixer' for IP '10.0.0.3'",
+                "ddos_fixer suggested blocking. POX applied network ACLs: Denied source IP 10.0.0.1 (TCP/UDP/ICMP)"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 17:57:16",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.3.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.3' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. The new password set is: n6EV#X^?HLZ~"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 17:59:17",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 18:04:51",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 18:08:43",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 18:18:52",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 18:20:52",
+        "events": [
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_complete_no_target_ports_found_or_reachable_for_defined_scans",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status update from iot_scanner.py",
+                "scan_complete_no_target_ports_found_or_reachable_for_defined_scans"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 18:58:12",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_specific_weak_creds_found_or_targets_unreachable",
+                    "targets_checked": [
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.100"
+                    ]
+                },
+                "Status: ssh_scanner.py",
+                "scan_complete_no_specific_weak_creds_found_or_targets_unreachable"
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.4'",
+                "No direct on-device method succeeded or available for closing 80/tcp on 10.0.0.4. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.4 to close 80/tcp\n[port_closer_stderr] Attempting to close port 80/tcp on 10.0.0.4.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.4...) POX ACL to block 10.0.0.4:80/tcp applied."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 19:18:53",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.254.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.254' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: lECM@2w^j0vf"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 19:20:54",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_weak_creds_found_on_reachable_ssh_targets",
+                    "targets_checked": [
+                        "10.0.0.100",
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.254"
+                    ]
+                },
+                "Status: ssh_scanner.py",
+                "scan_complete_no_weak_creds_found_on_reachable_ssh_targets"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 21:41:25",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: iot_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: ssh_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 21:44:13",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.2",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        23
+                    ],
+                    "details": "Device 10.0.0.2 has a high-risk open Telnet port: 23. Other open: [23].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.2'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.2. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.2 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.2.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.2...) POX ACL to block 10.0.0.2:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.4",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        80
+                    ],
+                    "details": "Device 10.0.0.4 has open port(s): [80].",
+                    "severity": "medium"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.4'",
+                "No direct on-device method succeeded or available for closing 80/tcp on 10.0.0.4. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.4 to close 80/tcp\n[port_closer_stderr] Attempting to close port 80/tcp on 10.0.0.4.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.4...) POX ACL to block 10.0.0.4:80/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.3.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.3' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: =ol>M@Hoyb+z"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.254.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.254' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: ,aH&RUN,e^J~"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 21:51:16",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: iot_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: ssh_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 21:52:39",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_weak_creds_found_on_reachable_ssh_targets",
+                    "targets_checked": [
+                        "10.0.0.100",
+                        "10.0.0.1",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.254"
+                    ]
+                },
+                "Status: ssh_scanner.py",
+                "scan_complete_no_weak_creds_found_on_reachable_ssh_targets"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:07:19",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: iot_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: ssh_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:12:26",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_complete_no_weak_creds_found_on_reachable_ssh_targets",
+                    "targets_checked": [
+                        "10.0.0.100",
+                        "10.0.0.2",
+                        "10.0.0.3",
+                        "10.0.0.4",
+                        "10.0.0.254",
+                        "10.0.0.1"
+                    ]
+                },
+                "Status: ssh_scanner.py",
+                "scan_complete_no_weak_creds_found_on_reachable_ssh_targets"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:20:21",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: iot_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "status": "scan_skipped_no_target_ips_provided"
+                },
+                "Status: ssh_scanner.py",
+                "scan_skipped_no_target_ips_provided"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:21:36",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.254.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.254' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: 1A1bFs_NN;<d"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:23:04",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.254.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.254' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: A2)e)Vy=..oR"
+            ],
+            [
+                {
+                    "scanner": "ssh_weak_creds_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "weak_ssh_credentials",
+                    "port": 22,
+                    "username": "user",
+                    "found_password": "password",
+                    "details": "Weak SSH credentials confirmed for user 'user' on 10.0.0.254.",
+                    "severity": "high"
+                },
+                "Ran fixer 'ssh_fixer' for IP '10.0.0.254' user 'user'",
+                "Password for 'user' changed successfully. New password logged and included in this result. New password: KgmYyR8l)S#?"
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:23:27",
+        "events": [
+            [
+                {
+                    "scanner": "pox_internal_dos_detector",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "potential_syn_packet_flood",
+                    "details": "SYN flood: 21 SYNs to port 22",
+                    "port": 22,
+                    "protocol": "TCP",
+                    "packet_count": 21,
+                    "prominent_sources": [
+                        {
+                            "ip": "10.0.0.1",
+                            "count": 21
+                        }
+                    ],
+                    "severity": "critical"
+                },
+                "Internal DoS: SYN Flood on 10.0.0.3:22",
+                "Threshold breached"
+            ],
+            [
+                {
+                    "scanner": "pox_internal_dos_detector",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "potential_syn_packet_flood",
+                    "details": "SYN flood: 21 SYNs to port 22",
+                    "port": 22,
+                    "protocol": "TCP",
+                    "packet_count": 21,
+                    "prominent_sources": [
+                        {
+                            "ip": "10.0.0.1",
+                            "count": 21
+                        }
+                    ],
+                    "severity": "critical"
+                },
+                "Ran fixer 'ddos_fixer' for IP '10.0.0.3'",
+                "Suggested blocking 1 IP(s) targeting 10.0.0.3 for potential_syn_packet_flood. POX ACLs: Denied 10.0.0.1."
+            ]
+        ]
+    },
+    {
+        "timestamp": "2025-05-26 22:25:27",
+        "events": [
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.100",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        1883
+                    ],
+                    "details": "Device 10.0.0.100 has open port(s): [1883].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.3",
+                    "vulnerability": "open_ports",
+                    "ports": [
+                        22
+                    ],
+                    "details": "Device 10.0.0.3 has open port(s): [22].",
+                    "severity": "medium"
+                },
+                "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+                "No specific auto-fixer configured."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ],
+            [
+                {
+                    "scanner": "iot_port_scanner",
+                    "ip": "10.0.0.254",
+                    "vulnerability": "open_telnet_port",
+                    "ports": [
+                        22,
+                        23,
+                        1883
+                    ],
+                    "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                    "severity": "high"
+                },
+                "Ran fixer 'port_closer' for IP '10.0.0.254'",
+                "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+            ]
+        ]
+    }
+]

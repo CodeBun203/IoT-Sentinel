@@ -1,0 +1,137 @@
+{
+    "timestamp": "2025-05-26 22:25:27",
+    "events": [
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.100",
+                "vulnerability": "open_ports",
+                "ports": [
+                    1883
+                ],
+                "details": "Device 10.0.0.100 has open port(s): [1883].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.3",
+                "vulnerability": "open_ports",
+                "ports": [
+                    22
+                ],
+                "details": "Device 10.0.0.3 has open port(s): [22].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.100",
+                "vulnerability": "open_ports",
+                "ports": [
+                    1883
+                ],
+                "details": "Device 10.0.0.100 has open port(s): [1883].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.3",
+                "vulnerability": "open_ports",
+                "ports": [
+                    22
+                ],
+                "details": "Device 10.0.0.3 has open port(s): [22].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.100",
+                "vulnerability": "open_ports",
+                "ports": [
+                    1883
+                ],
+                "details": "Device 10.0.0.100 has open port(s): [1883].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.100 (Ports: [1883]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.3",
+                "vulnerability": "open_ports",
+                "ports": [
+                    22
+                ],
+                "details": "Device 10.0.0.3 has open port(s): [22].",
+                "severity": "medium"
+            },
+            "Identified 'open_ports' on 10.0.0.3 (Ports: [22]).",
+            "No specific auto-fixer configured."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.254",
+                "vulnerability": "open_telnet_port",
+                "ports": [
+                    22,
+                    23,
+                    1883
+                ],
+                "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                "severity": "high"
+            },
+            "Ran fixer 'port_closer' for IP '10.0.0.254'",
+            "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.254",
+                "vulnerability": "open_telnet_port",
+                "ports": [
+                    22,
+                    23,
+                    1883
+                ],
+                "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                "severity": "high"
+            },
+            "Ran fixer 'port_closer' for IP '10.0.0.254'",
+            "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+        ],
+        [
+            {
+                "scanner": "iot_port_scanner",
+                "ip": "10.0.0.254",
+                "vulnerability": "open_telnet_port",
+                "ports": [
+                    22,
+                    23,
+                    1883
+                ],
+                "details": "Device 10.0.0.254 has a high-risk open Telnet port: 23. Other open: [22, 23, 1883].",
+                "severity": "high"
+            },
+            "Ran fixer 'port_closer' for IP '10.0.0.254'",
+            "No direct on-device method succeeded or available for closing 23/tcp on 10.0.0.254. Relies on network-level ACLs if configured by POX. (Stderr: [port_closer_main] port_closer.py invoked for 10.0.0.254 to close 23/tcp\n[port_closer_stderr] Attempting to close port 23/tcp on 10.0.0.254.\n[port_closer_stderr] Trying SSH/iptables method for 10.0.0.) POX ACL to block 10.0.0.254:23/tcp applied."
+        ]
+    ]
+}

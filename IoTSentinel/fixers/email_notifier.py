@@ -74,8 +74,11 @@ SMTP_PASSWORD = email_config.get("smtp_password")
 RECIPIENT_EMAIL = email_config.get("recipient_email")
 
 def format_consolidated_vulnerabilities_for_email(vulnerabilities_with_actions):
+    # vulnerabilities_with_actions is a list of tuples:
+    # (scan_data_dict, action_description_str, outcome_message_str)
+
     if not vulnerabilities_with_actions:
-        return "[INFO]", "No new vulnerabilities or significant events detected in this scan cycle."
+        return "[INFO]", "No new vulnerabilities or significant actionable events detected in this scan cycle."
 
     body_lines = [
         "Dear IoT Sentinel Administrator,",
@@ -84,109 +87,70 @@ def format_consolidated_vulnerabilities_for_email(vulnerabilities_with_actions):
     ]
     
     highest_severity_val = 0 
+    # Define a mapping for severity to numeric value for sorting/prioritizing if needed
     severity_map = {"INFO":0, "LOW":1, "MEDIUM":2, "HIGH":3, "CRITICAL":4, "ERROR":4}
+    entry_count = 0
 
-    for i, (scan_data, action_desc, outcome_msg) in enumerate(vulnerabilities_with_actions):
-        body_lines.append(f"\nEntry #{i+1}:")
+    for i, event_tuple in enumerate(vulnerabilities_with_actions):
+        scan_data, action_desc, outcome_msg = event_tuple
         
-        vuln_type = scan_data.get('vulnerability')
-        status_update = scan_data.get('status') # Check for status field
-        scanner_name = scan_data.get('scanner', 'Unknown Scanner')
-        ip_affected = scan_data.get('ip', 'N/A')
-        severity = str(scan_data.get('severity', 'INFO')).upper() # Status messages might not have severity, default to INFO
-        details = scan_data.get('details', 'No additional details provided.')
+        # Skip reporting for entries that are purely status updates from scanners
+        # if not scan_data.get("vulnerability"): 
+        #     continue # This was handled by filter in mqtt_monitor before calling this
 
+        entry_count += 1
+        body_lines.append(f"\nEntry #{entry_count}:")
+        
+        ip_affected = scan_data.get('ip', 'N/A')
+        vuln_type = scan_data.get('vulnerability', 'Unknown Event')
+        severity = str(scan_data.get('severity', 'INFO')).upper()
+        
         current_sev_val = severity_map.get(severity, 0)
         if current_sev_val > highest_severity_val:
             highest_severity_val = current_sev_val
 
-        if vuln_type: # It's a vulnerability
-            body_lines.append(f"  Event/Vulnerability: {vuln_type} (Severity: {severity})")
-        elif status_update: # It's a status update
-            body_lines.append(f"  Event/Status: {status_update}")
-            body_lines.append(f"  Source: {scanner_name}")
-            # For status, 'details' might not be relevant unless it's part of the status message itself
-            # The outcome_msg will contain the status if it's just a status.
-            # Let's adjust what 'details' means here or just rely on outcome_msg for status.
-            details = outcome_msg # For status, the outcome_msg is usually the status itself.
-        else: # Truly unknown or malformed
-            body_lines.append(f"  Event/Vulnerability: Undefined Event from {scanner_name} (Severity: {severity})")
+        body_lines.append(f"  Device IP: {ip_affected}")
+        body_lines.append(f"  Issue: {vuln_type} (Severity: {severity})")
 
-        if ip_affected != 'N/A':
-            body_lines.append(f"  Target IP: {ip_affected}")
-
-        ports = scan_data.get('ports', scan_data.get('port'))
-        if ports and vuln_type : # Only show ports if it's a vulnerability context
-            body_lines.append(f"  Affected Port(s): {str(ports)}")
+        details_parts = []
+        if "ports" in scan_data and scan_data["ports"]:
+            details_parts.append(f"Port(s): {scan_data['ports']}")
+        if "username" in scan_data and scan_data["username"]:
+            details_parts.append(f"User: {scan_data['username']}")
+        if not details_parts and "details" in scan_data: # Fallback to original details if no specific parts
+            details_parts.append(f"Details: {scan_data['details'][:100]}{'...' if len(scan_data['details']) > 100 else ''}")
         
-        if "username" in scan_data and scan_data.get("username") and vuln_type: # Only for vulns
-            body_lines.append(f"  Affected User: {scan_data['username']}")
+        if details_parts:
+            body_lines.append(f"  Context: {'; '.join(details_parts)}")
 
-        if vuln_type : # Only show "Scanner Details:" if it's a vulnerability
-             body_lines.append(f"  Scanner Details: {details}")
-        elif status_update: # For status, the 'details' was set to outcome_msg
-            pass # Action/Outcome will cover it
+        fix_attempted_msg = "No (Not applicable or no fixer configured)"
+        if "Ran fixer" in action_desc or "Fixer dispatched" in outcome_msg or "Threshold breached" in outcome_msg: # Check for more keywords
+            fix_attempted_msg = f"Yes ({action_desc.replace('Ran fixer ', '').split(' for IP')[0]})" # Extract fixer name
+        elif "No specific auto-fixer configured" in outcome_msg or "No fixer configured" in outcome_msg:
+             fix_attempted_msg = "No (Fixer not configured for this issue)"
+
+
+        body_lines.append(f"  Fix Attempted: {fix_attempted_msg}")
         
-        # Prominent Sources for DoS
-        if vuln_type and ("potential_" in vuln_type and "flood" in vuln_type or "dos_ddos" in vuln_type):
-            prominent_sources = scan_data.get("prominent_sources")
-            if prominent_sources and isinstance(prominent_sources, list):
-                sources_display_limit = 3
-                sources_strings = []
-                for i_src, src_info in enumerate(prominent_sources):
-                    if i_src < sources_display_limit:
-                        source_ip = src_info.get("ip")
-                        source_count = src_info.get("count")
-                        if source_ip and source_count is not None:
-                            sources_strings.append(f"{source_ip} (count: {source_count})")
-                        elif source_ip:
-                            sources_strings.append(source_ip)
-                    else:
-                        sources_strings.append(f"and {len(prominent_sources) - sources_display_limit} more...")
-                        break
-                if sources_strings:
-                    body_lines.append(f"  Prominent Source IP(s): {', '.join(sources_strings)}")
-            
-            targeted_ports_info = scan_data.get("targeted_ports_info") 
-            if targeted_ports_info and isinstance(targeted_ports_info, list):
-                ports_strings = [f"{p_info.get('port')}(count:{p_info.get('count')})" for p_info in targeted_ports_info[:3]]
-                if ports_strings:
-                    body_lines.append(f"  Suspiciously Targeted Port(s): {', '.join(ports_strings)}{' and more...' if len(targeted_ports_info) > 3 else ''}")
+        # Summarize outcome message
+        summarized_outcome = outcome_msg
+        if "New password set is:" in outcome_msg:
+            summarized_outcome = "Password changed successfully. New password logged."
+        elif "POX additionally applied a network ACL" in outcome_msg:
+            summarized_outcome = "On-device fix failed/skipped. Network ACL applied by POX."
+        elif "ddos_fixer suggested blocking. POX applied network ACLs:" in outcome_msg:
+            summarized_outcome = "DDoS Fixer suggested blocks; POX applied network ACLs."
+        elif "No direct on-device method succeeded" in outcome_msg and "Relies on network-level ACLs" in outcome_msg:
+            summarized_outcome = "On-device fix failed. Relies on POX ACLs if configured."
 
-        body_lines.append(f"  Action Attempted: {action_desc}")
-        body_lines.append(f"  Action Outcome: {outcome_msg}")
 
-        password_phrase = "new password set is: "
-        if password_phrase in outcome_msg.lower() and \
-           (("password for" in outcome_msg.lower() and "changed successfully" in outcome_msg.lower()) or \
-            ("new password logged" in outcome_msg.lower())):
-            user_changed = scan_data.get("username", "N/A_USER")
-            if user_changed == "N/A_USER" and "user '" in outcome_msg:
-                try:
-                    user_changed = outcome_msg.split("user '")[1].split("'")[0]
-                except IndexError:
-                    user_changed = "an affected user"
-            
-            body_lines.append(f"  RECOMMENDATION: The password for '{user_changed}' on {ip_affected} was changed automatically.")
-            try:
-                password_part_search = outcome_msg.lower().split(password_phrase, 1)
-                if len(password_part_search) > 1:
-                    actual_new_password = password_part_search[1].strip().split(" ")[0]
-                    if actual_new_password and len(actual_new_password) > 3 and not actual_new_password.startswith("("):
-                         body_lines.append(f"                  The automatically set new password is: {actual_new_password}")
-                         body_lines.append(f"                  SECURITY WARNING: This password is included for your convenience during testing.")
-                         body_lines.append(f"                                  Transmitting passwords via email is insecure and NOT recommended for production.")
-                    else: 
-                        body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt") # Added more specific log file name
-                else:
-                    body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt")
-            except Exception as e: 
-                print(f"[EmailNotifier WARN] Could not parse new password from outcome: {outcome_msg}. Error: {e}", file=sys.stderr)
-                body_lines.append(f"                  The new password was logged securely. Please check IoTSentinel/logs/new_credentials_log.txt or changed_default_credentials_log.txt")
-            body_lines.append(f"                  It is strongly advised to log in with this new password and change it to a strong, memorable one of your choice.")
+        body_lines.append(f"  Fix Result/Outcome: {summarized_outcome[:250]}{'...' if len(summarized_outcome) > 250 else ''}")
         body_lines.append("-" * 60)
     
-    body_lines.append("\nPlease review the system logs for more detailed information.")
+    if entry_count == 0: # All items were filtered out (e.g., only status messages)
+        return "[INFO]", "No new actionable vulnerabilities detected in this scan cycle."
+
+    body_lines.append("\nPlease review the system UI logs for more detailed information.")
     body_lines.append("\nRegards,\nIoT Sentinel System")
     
     email_body = "\n".join(body_lines)

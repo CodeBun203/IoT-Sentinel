@@ -1,0 +1,13 @@
+{
+    "nodes": [
+        {
+            "id": "pox_controller_node",
+            "type": "controller",
+            "data": {
+                "label": "IoT Sentinel Controller",
+                "raw_label": "\ud83e\udde0 SDN Controller (POX)"
+            }
+        }
+    ],
+    "links": []
+}
